@@ -1,0 +1,24 @@
+{
+  "name": "tangkwa-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tangkwa.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.13.1",
+    "uuid": "^2.0.2",
+    "webdriverio": "^4.2.8",
+    "webpack-hot-middleware": "^2.12.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^6.1.2",
+    "standard": "^8.0.0"
+  },
+  "standard": {
+    "parser": "babel-eslint"
+  }
+}
