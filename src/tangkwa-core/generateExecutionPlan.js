@@ -26,11 +26,12 @@ export function generateExecutionPlan (project, scenarioReference) {
 
   function findAllMatchingStepDefinitions (stepInfo) {
     return project.stepDefinitions.filter((definition) => (
-      definition.stepName === stepInfo.text
+      definition.stepName.toLowerCase() === stepInfo.text.toLowerCase()
     ))
   }
 
   function createStepInitializer () {
+    const knownContextTypes = new Set()
     function initializeStep (title, number, stepInfo) {
       const invalid = (reason) => ({ info: stepInfo, valid: false, reason })
       const matching = findAllMatchingStepDefinitions(stepInfo)
@@ -40,7 +41,25 @@ export function generateExecutionPlan (project, scenarioReference) {
       if (matching.length > 1) {
         return invalid('Found ' + matching.length + ' matching step definitions, which results in an ambiguous step.')
       }
-      return { info: stepInfo, valid: true }
+      const stepDefinition = matching[0]
+      const options = stepDefinition.createOptions()
+      if (options.contextTypes) {
+        const missing = [ ]
+        for (const key of Object.keys(options.contextTypes)) {
+          if (!knownContextTypes.has(key)) {
+            missing.push(key)
+          }
+        }
+        if (missing.length) {
+          return invalid('Missing context: ' + missing.join(', '))
+        }
+      }
+      if (options.nextContextTypes) {
+        for (const key of Object.keys(options.nextContextTypes)) {
+          knownContextTypes.add(key)
+        }
+      }
+      return { info: stepInfo, options, valid: true }
     }
     function initializeSteps (title, steps) {
       const out = [ ]

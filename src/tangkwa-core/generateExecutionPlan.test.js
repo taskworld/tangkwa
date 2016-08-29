@@ -54,6 +54,14 @@ test('a step is invalid when the match is ambiguous', t => {
   t.is(result.sections[0].steps[0].reason, 'Found 2 matching step definitions, which results in an ambiguous step.')
 })
 
+test('a step is invalid when required context is not given', t => {
+  const result = plan('Login.feature', 'Success')
+  t.true(result.sections[0].steps[0].valid)
+  t.true(result.sections[0].steps[1].valid)
+  t.false(result.sections[0].steps[2].valid)
+  t.is(result.sections[0].steps[2].reason, 'Missing context: browser')
+})
+
 function plan (featureFilename, scenarioName) {
   const project = getTestProject()
   const ref = ScenarioReference.init({ featureFilename, scenarioName })
