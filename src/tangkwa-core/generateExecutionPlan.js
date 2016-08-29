@@ -7,14 +7,30 @@ export function generateExecutionPlan (project, scenarioReference) {
   const sections = [ ]
   const matchingFeature = found.feature
   const matchingScenario = found.scenario
+  const stepInitializer = createStepInitializer()
 
   if (matchingFeature.background) {
-    sections.push({ name: 'Background' })
+    sections.push({
+      name: 'Background',
+      steps: stepInitializer.initializeSteps(matchingFeature.background.steps)
+    })
   }
 
-  sections.push({ name: 'Scenario: ' + matchingScenario.name })
+  sections.push({
+    name: 'Scenario: ' + matchingScenario.name,
+    steps: stepInitializer.initializeSteps(matchingScenario.steps)
+  })
 
   return { sections }
+
+  function createStepInitializer () {
+    function initializeSteps (steps) {
+      return steps
+    }
+    return {
+      initializeSteps
+    }
+  }
 
   function findMatchingFeatureAndScenario () {
     const matches = ScenarioReference.matcher(scenarioReference)
