@@ -4,7 +4,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import history from './history'
-import { SCENARIO_SELECTED } from './redux'
 
 const absolute = { position: 'absolute' }
 const resetBox = { margin: 0, padding: 0 }
