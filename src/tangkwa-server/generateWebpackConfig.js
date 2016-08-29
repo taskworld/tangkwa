@@ -20,7 +20,7 @@ module.exports = function generateWebpackConfig ({ projectPath }) {
     resolve: {
       alias: {
         'tangkwa-ide': require.resolve('../tangkwa-ide'),
-        'tangkwa-steps': require.resolve('../tangkwa-steps'),
+        'tangkwa-runtime': require.resolve('../tangkwa-runtime'),
         '__project__': projectPath
       }
     },

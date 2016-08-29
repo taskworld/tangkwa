@@ -2,7 +2,9 @@ import * as Browser from './Browser'
 
 import assert from 'assert'
 import t from 'tcomb'
-import { createStepDefinition } from 'tangkwa-steps'
+import { createStepDefinition, loadFeaturesFromContext } from 'tangkwa-runtime'
+
+export const features = loadFeaturesFromContext(require.context('./features', true, /\.feature$/))
 
 export const stepDefinitions = [
   createStepDefinition('I am on Google', () => ({
