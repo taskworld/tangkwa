@@ -48,6 +48,12 @@ test('a step is not valid without matching definition', t => {
   t.is(result.sections[0].steps[0].reason, 'No matching step definition found.')
 })
 
+test('a step is not valid when the match is ambiguous', t => {
+  const result = plan('Ambiguous.feature', 'a scenario')
+  t.false(result.sections[0].steps[0].valid)
+  t.is(result.sections[0].steps[0].reason, 'Found 2 matching step definitions, which results in an ambiguous step.')
+})
+
 function plan (featureFilename, scenarioName) {
   const project = getTestProject()
   const ref = ScenarioReference.init({ featureFilename, scenarioName })
@@ -96,6 +102,18 @@ function getTestProject () {
       ]
     },
     {
+      name: 'Ambiguous steps',
+      filename: 'Ambiguous.feature',
+      scenarios: [
+        {
+          name: 'a scenario',
+          steps: [
+            { keyword: 'Given', text: 'everything' }
+          ]
+        }
+      ]
+    },
+    {
       name: 'log in',
       filename: 'Login.feature',
       scenarios: [
@@ -128,6 +146,14 @@ function getTestProject () {
       }
     })),
     createStepDefinition('another background step', () => ({
+      run () {
+      }
+    })),
+    createStepDefinition('everything', () => ({
+      run () {
+      }
+    })),
+    createStepDefinition('everything', () => ({
       run () {
       }
     })),
