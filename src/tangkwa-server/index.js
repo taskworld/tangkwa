@@ -23,6 +23,8 @@ app.use(require('webpack-dev-middleware')(compiler, {
 
 app.use(require('webpack-hot-middleware')(compiler))
 
+app.use(require('connect-history-api-fallback')())
+
 app.listen(55555, '127.0.0.1', function () {
   const { address, port } = this.address()
   console.log('Now listening at http://' + address + ':' + port)

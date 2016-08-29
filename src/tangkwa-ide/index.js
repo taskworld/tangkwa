@@ -2,36 +2,15 @@ import 'normalize.css'
 
 import './body.css'
 
-import u from 'updeep'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 
-const PROJECT_LOADED = 'PROJECT_LOADED'
-const PROJECT_LOAD_FAILED = 'PROJECT_LOAD_FAILED'
-
-const IDEState = {
-  initialState: {
-    project: null,
-    projectLoadError: null
-  },
-  handleProjectLoaded: (project) => u({ project: () => project }),
-  handleProjectLoadFailed: (error) => u({ projectLoadError: () => error })
-}
+import history from './history'
+import { reducer, PROJECT_LOADED, PROJECT_LOAD_FAILED, NAVIGATION } from './redux'
 
 const store = createStore(reducer, window.devToolsExtension && window.devToolsExtension())
-
-function reducer (state = IDEState.initialState, action) {
-  switch (action.type) {
-    case PROJECT_LOADED:
-      return IDEState.handleProjectLoaded(action.project)(state)
-    case PROJECT_LOAD_FAILED:
-      return IDEState.handleProjectLoadFailed(action.error)(state)
-    default:
-      return state
-  }
-}
 
 function loadProject () {
   try {
@@ -73,6 +52,12 @@ renderApp()
 if (module.hot) {
   module.hot.accept('./view', renderApp)
 }
+
+history.listen((location) => {
+  store.dispatch({ type: NAVIGATION, location: location })
+})
+
+store.dispatch({ type: NAVIGATION, location: history.getCurrentLocation() })
 
 // const createStep = (project) => (stepName) => {
 //   const isMatching = (stepDefinition) => stepDefinition.stepName === stepName

@@ -1,4 +1,10 @@
+import * as ScenarioReference from './ScenarioReference'
+
 import React from 'react'
+import { connect } from 'react-redux'
+
+import history from './history'
+import { SCENARIO_SELECTED } from './redux'
 
 const absolute = { position: 'absolute' }
 const resetBox = { margin: 0, padding: 0 }
@@ -25,7 +31,64 @@ export const App = () => (
   </div>
 )
 
-const ScenarioList = () => (
+const selectProject = (state) => state.project
+const selectProjectLoadError = (state) => state.projectLoadError
+const selectSelectedScenario = (state) => state.selectedScenario
+
+const ScenarioList = connect(
+  (state) => ({
+    project: selectProject(state),
+    projectLoadError: selectProjectLoadError(state),
+    selectedScenario: selectSelectedScenario(state)
+  }),
+  (dispatch) => ({
+    onSelectScenario: (scenarioReference) => {
+      history.push(ScenarioReference.getLocationTransition(scenarioReference))
+    }
+  })
+)(
+  ({ project, projectLoadError, selectedScenario, onSelectScenario }) => {
+    if (projectLoadError) {
+      return <LoadError error='Oops' />
+    }
+    if (project) {
+      const matcher = selectedScenario ? ScenarioReference.matcher(selectedScenario) : () => false
+      return (
+        <div>
+          {project.features.map((feature) => (
+            <Feature key={feature.filename} name={feature.name} file={feature.filename}>
+              {feature.scenarios.map((scenario) => {
+                const ref = ScenarioReference.init({
+                  featureFilename: feature.filename,
+                  scenarioName: scenario.name
+                })
+                return (
+                  <Scenario
+                    name={scenario.name}
+                    key={scenario.name}
+                    onClick={() => onSelectScenario(ref)}
+                    selected={matcher(ref)}
+                  />
+                )
+              })}
+            </Feature>
+          ))}
+        </div>
+      )
+    }
+    return <LoadingProject />
+  }
+)
+
+const LoadingProject = () => (
+  <div style={{ padding: '1rem' }}>Loading project…</div>
+)
+
+const LoadError = ({ error }) => (
+  <div style={{ padding: '1rem' }}><ErrorBox status='error' error={error} /></div>
+)
+
+export const ScenarioListDemo = () => (
   <div>
     <Feature name='One'>
       <Scenario name='My Scenario' />
@@ -34,8 +97,8 @@ const ScenarioList = () => (
   </div>
 )
 
-const ListItem = ({ children }) => (
-  <div style={{ padding: '0.25rem 0.5rem' }}>{children}</div>
+const ListItem = ({ children, style = { }, ...props }) => (
+  <div style={{ padding: '0.25rem 0.5rem', ...style }} {...props}>{children}</div>
 )
 
 const Feature = ({ name, children }) => (
@@ -47,9 +110,15 @@ const Feature = ({ name, children }) => (
   </div>
 )
 
-const Scenario = ({ name }) => (
-  <ListItem>
-    <div style={{ paddingLeft: '1rem' }}>{name}</div>
+const Scenario = ({ name, onClick, selected }) => (
+  <ListItem onClick={onClick} style={{ cursor: 'pointer' }}>
+    <div
+      style={{
+        paddingLeft: '1rem',
+        color: selected ? '#ff9' : '',
+        fontWeight: selected ? 'bold' : ''
+      }}
+    >{name}</div>
   </ListItem>
 )
 
@@ -107,7 +176,7 @@ const Step = ({ keyword, name, children, status, error }) => (
       {' '}
       <span style={{ color: statusColor(status) }}>{name}</span>
     </ListItem>
-    {error ? <ErrorBox status={status} error={error} /> : null}
+    {error ? <div style={{ margin: '0 0.5rem 0 4.8rem' }}><ErrorBox status={status} error={error} /></div> : null}
     <div style={{ marginLeft: '2rem' }}>
       {children}
     </div>
@@ -115,7 +184,7 @@ const Step = ({ keyword, name, children, status, error }) => (
 )
 
 const ErrorBox = ({ status, error }) => (
-  <div style={{ borderColor: statusColor(status), borderStyle: 'solid', borderWidth: 1, padding: '0.5rem', margin: '0 0.5rem 0 4.8rem', borderRadius: '0.25rem' }}>
+  <div style={{ borderColor: statusColor(status), borderStyle: 'solid', borderWidth: 1, padding: '0.5rem', borderRadius: '0.25rem' }}>
     <pre style={{ ...resetBox, whiteSpace: 'pre-wrap', font: '0.75rem Menlo' }}>{String(error)}</pre>
   </div>
 )
