@@ -42,13 +42,13 @@ test('each valid step should have a valid flag', t => {
   t.true(result.sections[0].steps[1].valid)
 })
 
-test('a step is not valid without matching definition', t => {
+test('a step is invalid without matching definition', t => {
   const result = plan('Not Exist.feature', 'a scenario')
   t.false(result.sections[0].steps[0].valid)
   t.is(result.sections[0].steps[0].reason, 'No matching step definition found.')
 })
 
-test('a step is not valid when the match is ambiguous', t => {
+test('a step is invalid when the match is ambiguous', t => {
   const result = plan('Ambiguous.feature', 'a scenario')
   t.false(result.sections[0].steps[0].valid)
   t.is(result.sections[0].steps[0].reason, 'Found 2 matching step definitions, which results in an ambiguous step.')
