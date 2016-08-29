@@ -36,6 +36,11 @@ test('each scenario contains the steps', t => {
   t.is(result.sections[1].steps.length, 3)
 })
 
+test('each step contains an ID', t => {
+  const result = plan('Test.feature', 'a scenario')
+  t.is(result.sections[0].steps[0].id, 'Test.feature → a scenario → 1. Given a background step')
+})
+
 test('each valid step should have a valid flag', t => {
   const result = plan('Test.feature', 'a scenario')
   t.true(result.sections[0].steps[0].valid)
