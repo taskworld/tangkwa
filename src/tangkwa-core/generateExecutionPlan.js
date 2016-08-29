@@ -11,14 +11,14 @@ export function generateExecutionPlan (project, scenarioReference) {
 
   if (matchingFeature.background) {
     sections.push({
-      name: 'Background',
+      title: 'Background',
       steps: stepInitializer.initializeSteps('Background', matchingFeature.background.steps)
     })
   }
 
   const title = 'Scenario: ' + matchingScenario.name
   sections.push({
-    name: title,
+    title,
     steps: stepInitializer.initializeSteps(title, matchingScenario.steps)
   })
 

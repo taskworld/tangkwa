@@ -24,8 +24,8 @@ test('it generates an execution plan from the project and current item', t => {
 test('it separates the tests into sections (background and scenario)', t => {
   const result = plan('Test.feature', 'another scenario')
   t.is(result.sections.length, 2)
-  t.is(result.sections[0].name, 'Background')
-  t.is(result.sections[1].name, 'Scenario: another scenario')
+  t.is(result.sections[0].title, 'Background')
+  t.is(result.sections[1].title, 'Scenario: another scenario')
 })
 
 test('each scenario contains the steps', t => {

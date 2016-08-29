@@ -1,6 +1,9 @@
 import * as IDEState from '../tangkwa-core/IDEState'
 import * as ScenarioReference from '../tangkwa-core/ScenarioReference'
 
+import { createSelector } from 'reselect'
+
+import generateExecutionPlan from '../tangkwa-core/generateExecutionPlan'
 export const PROJECT_LOADED = 'PROJECT_LOADED'
 export const PROJECT_LOAD_FAILED = 'PROJECT_LOAD_FAILED'
 export const NAVIGATION = 'NAVIGATION'
@@ -17,3 +20,15 @@ export function reducer (state = IDEState.initialState, action) {
       return state
   }
 }
+
+export const selectProject = (state) => state.project
+export const selectProjectLoadError = (state) => state.projectLoadError
+export const selectSelectedScenario = (state) => state.selectedScenario
+export const selectExecutionPlan = createSelector(
+  selectProject,
+  selectSelectedScenario,
+  (project, ref) => {
+    if (!project || !ref) return null
+    return generateExecutionPlan(project, ref)
+  }
+)

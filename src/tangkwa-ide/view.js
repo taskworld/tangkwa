@@ -4,6 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import history from './history'
+import { selectProject, selectProjectLoadError, selectSelectedScenario, selectExecutionPlan } from './redux'
 
 const absolute = { position: 'absolute' }
 const resetBox = { margin: 0, padding: 0 }
@@ -29,10 +30,6 @@ export const App = () => (
     </div>
   </div>
 )
-
-const selectProject = (state) => state.project
-const selectProjectLoadError = (state) => state.projectLoadError
-const selectSelectedScenario = (state) => state.selectedScenario
 
 const ScenarioList = connect(
   (state) => ({
@@ -118,9 +115,35 @@ const Scenario = ({ name, onClick, selected }) => (
   </ListItem>
 )
 
-const ExecutionPlan = () => (
-  <ExecutionPlanDemo />
-)
+const ExecutionPlan = connect(
+  (state) => ({
+    executionPlan: selectExecutionPlan(state)
+  })
+)(({ executionPlan }) => (executionPlan
+  ? (
+    <div>
+      {executionPlan.sections.map((section) => (
+        <ExecutionSection title={section.title} key={section.title}>
+          {section.steps.map((step) => {
+            const renderStep = (props) => (
+              <Step keyword={step.info.keyword} name={step.info.text} key={step.id} />
+            )
+            if (step.valid) {
+              return renderStep({ })
+            } else {
+              return renderStep({ status: 'invalid', error: step.reason })
+            }
+          })}
+        </ExecutionSection>
+      ))}
+    </div>
+  )
+  : (
+    <div style={{ padding: '1rem' }}>
+      Please select a scenario to run on the left.
+    </div>
+  )
+))
 
 export const ExecutionPlanDemo = () => (
   <div>
