@@ -12,24 +12,39 @@ export function generateExecutionPlan (project, scenarioReference) {
   if (matchingFeature.background) {
     sections.push({
       name: 'Background',
-      steps: stepInitializer.initializeSteps(matchingFeature.background.steps)
+      steps: stepInitializer.initializeSteps('Background', matchingFeature.background.steps)
     })
   }
 
+  const title = 'Scenario: ' + matchingScenario.name
   sections.push({
-    name: 'Scenario: ' + matchingScenario.name,
-    steps: stepInitializer.initializeSteps(matchingScenario.steps)
+    name: title,
+    steps: stepInitializer.initializeSteps(title, matchingScenario.steps)
   })
 
   return { sections }
 
+  function findAllMatchingStepDefinitions (stepInfo) {
+    return project.stepDefinitions.filter((definition) => (
+      definition.stepName === stepInfo.text
+    ))
+  }
+
   function createStepInitializer () {
-    function initializeStep (step) {
-      return { info: step, valid: true }
+    function initializeStep (title, number, stepInfo) {
+      const invalid = (reason) => ({ info: stepInfo, valid: false, reason })
+      const matching = findAllMatchingStepDefinitions(stepInfo)
+      if (matching.length === 0) return invalid('')
+      // if (matching.length > 1) return invalid('')
+      return { info: stepInfo, valid: true }
     }
-    function initializeSteps (steps) {
+    function initializeSteps (title, steps) {
       const out = [ ]
-      for (const step of steps) out.push(initializeStep(step))
+      let number = 0
+      for (const step of steps) {
+        number += 1
+        out.push(initializeStep(title, number, step))
+      }
       return out
     }
     return {

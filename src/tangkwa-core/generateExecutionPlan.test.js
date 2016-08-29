@@ -42,6 +42,11 @@ test('each valid step should have a valid flag', t => {
   t.true(result.sections[0].steps[1].valid)
 })
 
+test('a step is not valid without matching definition', t => {
+  const result = plan('Not Exist.feature', 'a scenario')
+  t.false(result.sections[0].steps[0].valid)
+})
+
 function plan (featureFilename, scenarioName) {
   const project = getTestProject()
   const ref = ScenarioReference.init({ featureFilename, scenarioName })
@@ -73,6 +78,18 @@ function getTestProject () {
           steps: [
             { keyword: 'When', text: 'it is run' },
             { keyword: 'Then', text: 'it ran' }
+          ]
+        }
+      ]
+    },
+    {
+      name: 'Test not existing step',
+      filename: 'Not Exist.feature',
+      scenarios: [
+        {
+          name: 'a scenario',
+          steps: [
+            { keyword: 'Given', text: 'nothing' }
           ]
         }
       ]
