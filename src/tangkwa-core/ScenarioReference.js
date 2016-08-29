@@ -6,6 +6,11 @@ export const init = t.struct({
   scenarioName: t.String
 })
 
+export const initWithFeatureAndScenario = (feature, scenario) => init({
+  featureFilename: feature.filename,
+  scenarioName: scenario.name
+})
+
 export const matcher = (test) => (matchee) => (
   test.featureFilename === matchee.featureFilename &&
   test.scenarioName === matchee.scenarioName

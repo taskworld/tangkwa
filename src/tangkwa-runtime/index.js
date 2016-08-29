@@ -1,47 +1,12 @@
 import invariant from 'invariant'
-import t from 'tcomb'
 
-export function createStepDefinition (stepName, createOptions) {
-  return {
-    stepName,
-    createOptions
-  }
-}
+import Feature, { Background, Scenario } from '../tangkwa-core/Feature'
+
+export { createStepDefinition } from '../tangkwa-core/createStepDefinition'
 
 export function loadFeaturesFromContext (context) {
   return context.keys().map((key) => createFeatureFromGherkinDocument(key, context(key)))
 }
-
-const Location = t.struct({
-  column: t.Number,
-  line: t.Number
-}, { name: 'Location' })
-
-const Steps = t.list(t.struct({
-  keyword: t.String,
-  text: t.String,
-  location: Location
-}, { name: 'Step' }))
-
-const Scenario = t.struct({
-  name: t.String,
-  steps: Steps,
-  location: Location
-}, { name: 'Scenario' })
-
-const Background = t.struct({
-  steps: Steps,
-  location: Location
-}, { name: 'Background' })
-
-const Feature = t.struct({
-  name: t.String,
-  filename: t.String,
-  description: t.maybe(t.String),
-  background: t.maybe(Background),
-  location: Location,
-  scenarios: t.list(Scenario)
-}, { name: 'Feature' })
 
 function createFeatureFromGherkinDocument (filename, document) {
   invariant(document.type === 'GherkinDocument', 'GherkinDocument expected')

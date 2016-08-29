@@ -1,5 +1,5 @@
-import * as IDEState from './IDEState'
-import * as ScenarioReference from './ScenarioReference'
+import * as IDEState from '../tangkwa-core/IDEState'
+import * as ScenarioReference from '../tangkwa-core/ScenarioReference'
 
 export const PROJECT_LOADED = 'PROJECT_LOADED'
 export const PROJECT_LOAD_FAILED = 'PROJECT_LOAD_FAILED'

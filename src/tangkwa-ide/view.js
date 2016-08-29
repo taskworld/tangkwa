@@ -1,4 +1,4 @@
-import * as ScenarioReference from './ScenarioReference'
+import * as ScenarioReference from '../tangkwa-core/ScenarioReference'
 
 import React from 'react'
 import { connect } from 'react-redux'
@@ -57,10 +57,7 @@ const ScenarioList = connect(
           {project.features.map((feature) => (
             <Feature key={feature.filename} name={feature.name} file={feature.filename}>
               {feature.scenarios.map((scenario) => {
-                const ref = ScenarioReference.init({
-                  featureFilename: feature.filename,
-                  scenarioName: scenario.name
-                })
+                const ref = ScenarioReference.initWithFeatureAndScenario(feature, scenario)
                 return (
                   <Scenario
                     name={scenario.name}
