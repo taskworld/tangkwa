@@ -126,7 +126,7 @@ const ExecutionPlan = connect(
         <ExecutionSection title={section.title} key={section.title}>
           {section.steps.map((step) => {
             const renderStep = (props) => (
-              <Step keyword={step.info.keyword} name={step.info.text} key={step.id} />
+              <Step keyword={step.info.keyword} name={step.info.text} key={step.id} {...props} />
             )
             if (step.valid) {
               return renderStep({ })

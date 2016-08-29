@@ -7,12 +7,21 @@ import { createStepDefinition, loadFeaturesFromContext } from 'tangkwa-runtime'
 export const features = loadFeaturesFromContext(require.context('./features', true, /\.feature$/))
 
 export const stepDefinitions = [
-  createStepDefinition('I am on Google', () => ({
+  createStepDefinition('I opened a browser', () => ({
     nextContextTypes: {
       browser: t.Any
     },
     async run (context) {
       const browser = await Browser.create({ browserName: 'chrome' })
+      return { browser }
+    }
+  })),
+  createStepDefinition('I am on Google', () => ({
+    contextTypes: {
+      browser: t.Any
+    },
+    async run (context) {
+      const browser = context.browser
       await Browser.init(browser)
       await Browser.url('https://www.google.com/')(browser)
       return { browser }
