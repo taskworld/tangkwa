@@ -34,7 +34,7 @@ export function generateExecutionPlan (project, scenarioReference) {
     function initializeStep (title, number, stepInfo) {
       const invalid = (reason) => ({ info: stepInfo, valid: false, reason })
       const matching = findAllMatchingStepDefinitions(stepInfo)
-      if (matching.length === 0) return invalid('')
+      if (matching.length === 0) return invalid('No matching step definition found.')
       // if (matching.length > 1) return invalid('')
       return { info: stepInfo, valid: true }
     }

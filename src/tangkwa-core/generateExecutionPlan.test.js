@@ -45,6 +45,7 @@ test('each valid step should have a valid flag', t => {
 test('a step is not valid without matching definition', t => {
   const result = plan('Not Exist.feature', 'a scenario')
   t.false(result.sections[0].steps[0].valid)
+  t.is(result.sections[0].steps[0].reason, 'No matching step definition found.')
 })
 
 function plan (featureFilename, scenarioName) {
