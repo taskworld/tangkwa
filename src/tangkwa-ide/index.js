@@ -1,4 +1,11 @@
+import 'normalize.css'
+
+import './body.css'
+
 import u from 'updeep'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 
 const PROJECT_LOADED = 'PROJECT_LOADED'
@@ -46,6 +53,26 @@ if (module.hot) {
 }
 
 loadProject()
+
+function renderApp () {
+  const { App } = require('./view')
+  const element = (
+    <Provider store={store}><App /></Provider>
+  )
+  const container = document.querySelector('#tangkwa-ide') || (() => {
+    const div = document.createElement('div')
+    div.id = 'tangkwa-ide'
+    document.body.appendChild(div)
+    return div
+  })()
+  ReactDOM.render(element, container)
+}
+
+renderApp()
+
+if (module.hot) {
+  module.hot.accept('./view', renderApp)
+}
 
 // const createStep = (project) => (stepName) => {
 //   const isMatching = (stepDefinition) => stepDefinition.stepName === stepName

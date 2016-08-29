@@ -26,7 +26,7 @@ module.exports = function generateWebpackConfig ({ projectPath }) {
     },
     module: {
       loaders: [
-        { test: /\.js$/, include: path.join(base, 'src'), loader: 'babel' },
+        { test: /\.css$/, loader: 'style!css' },
         { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
         { test: /\.feature/, loader: require.resolve('../tangkwa-ide/gherkin-loader') }
       ]
