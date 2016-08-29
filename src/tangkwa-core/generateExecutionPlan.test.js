@@ -31,7 +31,15 @@ test('it separates the tests into sections (background and scenario)', t => {
 test('each scenario contains the steps', t => {
   const result = plan('Test.feature', 'a scenario')
   t.is(result.sections[0].steps.length, 2)
+  t.is(result.sections[0].steps[0].info.keyword, 'Given')
+  t.is(result.sections[0].steps[0].info.text, 'a background step')
   t.is(result.sections[1].steps.length, 3)
+})
+
+test('each valid step should have a valid flag', t => {
+  const result = plan('Test.feature', 'a scenario')
+  t.true(result.sections[0].steps[0].valid)
+  t.true(result.sections[0].steps[1].valid)
 })
 
 function plan (featureFilename, scenarioName) {
@@ -94,6 +102,10 @@ function getTestProject () {
   ]
   const stepDefinitions = [
     createStepDefinition('it is run', () => ({
+      run () {
+      }
+    })),
+    createStepDefinition('a background step', () => ({
       run () {
       }
     })),

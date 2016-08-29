@@ -24,8 +24,13 @@ export function generateExecutionPlan (project, scenarioReference) {
   return { sections }
 
   function createStepInitializer () {
+    function initializeStep (step) {
+      return { info: step, valid: true }
+    }
     function initializeSteps (steps) {
-      return steps
+      const out = [ ]
+      for (const step of steps) out.push(initializeStep(step))
+      return out
     }
     return {
       initializeSteps
