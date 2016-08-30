@@ -91,7 +91,7 @@ const ScenarioList = connect(
 )(
   ({ project, projectLoadError, selectedScenario, onSelectScenario }) => {
     if (projectLoadError) {
-      return <LoadError error='Oops' />
+      return <LoadError error={projectLoadError} />
     }
     if (project) {
       const matcher = selectedScenario ? ScenarioReference.matcher(selectedScenario) : () => false
