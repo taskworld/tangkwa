@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { compose, withProps } from 'recompose'
 
 import history from './history'
-import { selectProject, selectProjectLoadError, selectSelectedScenario, selectExecutionPlan } from './redux'
+import { selectProject, selectProjectLoadError, selectSelectedScenario, selectExecutionPlan, selectSelectedStepId, STEP_SELECTED } from './redux'
 
 const absolute = { position: 'absolute' }
 const resetBox = { margin: 0, padding: 0 }
@@ -174,43 +174,41 @@ const Scenario = ({ name, onClick, selected }) => (
 
 const ExecutionPlan = connect(
   (state) => ({
-    executionPlan: selectExecutionPlan(state)
+    executionPlan: selectExecutionPlan(state),
+    selectedStepId: selectSelectedStepId(state)
   }),
   (dispatch) => ({
     onSelectStep: (step) => {
-      alert('Selected step: ' + require('util').inspect(step))
+      dispatch({ type: STEP_SELECTED, stepId: step.id })
     }
   })
-)(({ executionPlan, onSelectStep }) => (executionPlan
-  ? (
-    <div>
-      {executionPlan.sections.map((section) => (
-        <ExecutionSection title={section.title} key={section.title}>
-          {section.steps.map((step) => {
-            const renderStep = (props) => (
-              <Step
-                keyword={step.info.keyword}
-                name={step.info.text}
-                key={step.id}
-                onClick={() => onSelectStep(step)}
-                {...props}
-              />
-            )
-            if (step.valid) {
-              return renderStep({ })
-            } else {
-              return renderStep({ status: 'invalid', error: step.reason })
-            }
-          })}
-        </ExecutionSection>
-      ))}
-    </div>
-  )
-  : (
-    <div style={{ padding: '1rem' }}>
-      Please select a scenario to run on the left.
-    </div>
-  )
+)(({ executionPlan, onSelectStep, selectedStepId }) => (executionPlan
+  ? <div>
+    {executionPlan.sections.map((section) => (
+      <ExecutionSection title={section.title} key={section.title}>
+        {section.steps.map((step) => {
+          const renderStep = (props) => (
+            <Step
+              keyword={step.info.keyword}
+              name={step.info.text}
+              key={step.id}
+              onClick={() => onSelectStep(step)}
+              selected={selectedStepId === step.id}
+              {...props}
+            />
+          )
+          if (step.valid) {
+            return renderStep({ })
+          } else {
+            return renderStep({ status: 'invalid', error: step.reason })
+          }
+        })}
+      </ExecutionSection>
+    ))}
+  </div>
+  : <div style={{ padding: '1rem' }}>
+    Please select a scenario to run on the left.
+  </div>
 ))
 
 export const ExecutionPlanDemo = () => (
@@ -256,9 +254,9 @@ const statusColor = (status) => {
   }
 }
 
-const Step = ({ keyword, name, children, status, error, onClick }) => (
+const Step = ({ keyword, name, children, status, selected, error, onClick }) => (
   <div>
-    <ListItem onClick={onClick}>
+    <ListItem onClick={onClick} highlighted={selected}>
       <strong style={{ display: 'inline-block', width: '4rem', textAlign: 'right', color: '#9ec5ab' }}>{keyword}</strong>
       {' '}
       <span style={{ color: statusColor(status) }}>{name}</span>

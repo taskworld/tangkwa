@@ -1,4 +1,5 @@
 import * as ScenarioReference from './ScenarioReference'
+import * as StepDefinition from './StepDefinition'
 
 export function generateExecutionPlan (project, scenarioReference) {
   const found = findMatchingFeatureAndScenario()
@@ -25,9 +26,7 @@ export function generateExecutionPlan (project, scenarioReference) {
   return { sections }
 
   function findAllMatchingStepDefinitions (stepInfo) {
-    return project.stepDefinitions.filter((definition) => (
-      definition.stepName.toLowerCase() === stepInfo.text.toLowerCase()
-    ))
+    return project.stepDefinitions.filter(StepDefinition.isMatchingByText(stepInfo.text))
   }
 
   function createStepInitializer () {
