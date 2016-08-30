@@ -136,11 +136,13 @@ export const ScenarioListDemo = () => (
   </div>
 )
 
-const ListItem = ({ children, style = { }, highlighted, ...props }) => (
+const ListItem = ({ children, onClick, style = { }, highlighted, ...props }) => (
   <div
+    onClick={onClick}
     style={{
       padding: '0.25rem 0.5rem',
       background: highlighted ? 'rgba(47,116,109,0.2)' : '',
+      cursor: onClick ? 'pointer' : 'default',
       ...style
     }}
     {...props}
@@ -159,7 +161,7 @@ const Feature = ({ name, children }) => (
 )
 
 const Scenario = ({ name, onClick, selected }) => (
-  <ListItem onClick={onClick} highlighted={selected} style={{ cursor: 'pointer' }}>
+  <ListItem onClick={onClick} highlighted={selected}>
     <div
       style={{
         paddingLeft: '1rem',
@@ -173,15 +175,26 @@ const Scenario = ({ name, onClick, selected }) => (
 const ExecutionPlan = connect(
   (state) => ({
     executionPlan: selectExecutionPlan(state)
+  }),
+  (dispatch) => ({
+    onSelectStep: (step) => {
+      alert('Selected step: ' + require('util').inspect(step))
+    }
   })
-)(({ executionPlan }) => (executionPlan
+)(({ executionPlan, onSelectStep }) => (executionPlan
   ? (
     <div>
       {executionPlan.sections.map((section) => (
         <ExecutionSection title={section.title} key={section.title}>
           {section.steps.map((step) => {
             const renderStep = (props) => (
-              <Step keyword={step.info.keyword} name={step.info.text} key={step.id} {...props} />
+              <Step
+                keyword={step.info.keyword}
+                name={step.info.text}
+                key={step.id}
+                onClick={() => onSelectStep(step)}
+                {...props}
+              />
             )
             if (step.valid) {
               return renderStep({ })
@@ -243,9 +256,9 @@ const statusColor = (status) => {
   }
 }
 
-const Step = ({ keyword, name, children, status, error }) => (
+const Step = ({ keyword, name, children, status, error, onClick }) => (
   <div>
-    <ListItem>
+    <ListItem onClick={onClick}>
       <strong style={{ display: 'inline-block', width: '4rem', textAlign: 'right', color: '#9ec5ab' }}>{keyword}</strong>
       {' '}
       <span style={{ color: statusColor(status) }}>{name}</span>
