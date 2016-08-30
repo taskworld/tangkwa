@@ -67,7 +67,8 @@ const StateInspector = compose(
       base0F: '#cc6633'
     },
     isLightTheme: false,
-    invertTheme: false
+    invertTheme: false,
+    hideRoot: true
   }),
   connect(
     (state) => ({
@@ -135,8 +136,17 @@ export const ScenarioListDemo = () => (
   </div>
 )
 
-const ListItem = ({ children, style = { }, ...props }) => (
-  <div style={{ padding: '0.25rem 0.5rem', ...style }} {...props}>{children}</div>
+const ListItem = ({ children, style = { }, highlighted, ...props }) => (
+  <div
+    style={{
+      padding: '0.25rem 0.5rem',
+      background: highlighted ? 'rgba(47,116,109,0.2)' : '',
+      ...style
+    }}
+    {...props}
+  >
+    {children}
+  </div>
 )
 
 const Feature = ({ name, children }) => (
@@ -149,7 +159,7 @@ const Feature = ({ name, children }) => (
 )
 
 const Scenario = ({ name, onClick, selected }) => (
-  <ListItem onClick={onClick} style={{ cursor: 'pointer' }}>
+  <ListItem onClick={onClick} highlighted={selected} style={{ cursor: 'pointer' }}>
     <div
       style={{
         paddingLeft: '1rem',
